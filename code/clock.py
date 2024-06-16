@@ -49,7 +49,7 @@ class Clock:
         if self.tz_data:
             s = f'2022-{mm:02d}-{d:02d}T{h:02d}:{m:02d}:{s:02d}'
             offset = 0
-            for k, v in self.tz_data.items():
+            for k, v in sorted(self.tz_data.items()):
                 if s >= k:
                     offset = v
             t += int(offset * 3600)
