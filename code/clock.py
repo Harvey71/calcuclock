@@ -14,6 +14,8 @@ dt_formats = {
     },
 }
 
+EPOCH_OFFSET = 946684800
+
 class Clock:
     
     def __init__(self, df_name = None, tz_name = None):
@@ -47,16 +49,15 @@ class Clock:
         t = time.mktime((y, mm, d, h, m, s, w, 0)) + offset
         # adjust by timezone
         if self.tz_data:
-            s = f'2022-{mm:02d}-{d:02d}T{h:02d}:{m:02d}:{s:02d}'
             offset = 0
-            for k, v in sorted(self.tz_data.items()):
-                if s >= k:
+            for k, v in sorted(self.tz_data):
+                if t + EPOCH_OFFSET >= k:
                     offset = v
-            t += int(offset * 3600)
+            t += offset
         return time.gmtime(t)
     
     def get_strings(self, offset=0):
-        y, mm, d, h, m, s, w, dd = self.read(offset)
+        y, mm, d, h, m, s, w, dd, *_ = self.read(offset)
         with open('expressions.txt') as f:
             f.seek((h * self.choices + random.randint(0, self.choices - 1)) * 6)
             hs = f.read(5)
@@ -109,5 +110,5 @@ def test():
         print(c.read())
         sleep_ms(990)
 
-        
-        
+
+
